@@ -1,6 +1,9 @@
 import requests,re
 from bs4 import BeautifulSoup
 
+def output_converter(item):
+    item = item[0]+item[1]
+    return int(item)
 http_proxy  = "http://10.3.100.207:8080"
 https_proxy = "https://10.3.100.207:8080"
 ftp_proxy   = "ftp://10.3.100.207:8080"
@@ -12,6 +15,6 @@ html = r.content
 soup = BeautifulSoup(html,'lxml')
 data = soup.findAll('div',{"class":"price"}) #"no_cpu offer wrap premium                   avail                  hacComplete                "})
 data = map(str,data)
-#find an appropriate way to do this matching
-final = re.findall('\xa0[0-9]*,[0-9]*'," ".join(data))
+final = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
 print final
+final = map(output_converter,final)
