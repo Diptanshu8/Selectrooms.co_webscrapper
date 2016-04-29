@@ -29,7 +29,7 @@ def web_scrapping(url,final):
     data = soup.findAll('div',{"class":"price"})
     data = map(str,data)
     extract = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
-    extract = map(output_converter,final)
+    #extract = map(output_converter,final)
     final.append(extract)
 
 class mythread(threading.Thread):
@@ -51,7 +51,12 @@ for i in xrange(len(links)):
         t.start()
     except:
         break
-    thread_list.append(t)
-for t in thread_list():
-    t.join()
-print len(final)
+    finally:
+        thread_list.append(t)
+print final
+#temp=[]
+#for item in final:
+#    temp.append(" ".join(item))
+#z = "\n".join(final)
+#with open('data.txt','w') as f:
+#    f.write(z)
