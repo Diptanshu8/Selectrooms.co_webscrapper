@@ -2,14 +2,15 @@ import requests,re,csv,threading
 from bs4 import BeautifulSoup
 
 def output_converter(item):
-    if item and len(item)>1:
-        item = int(item[0])+int(item[1])
-    elif item:
-        item = int(item[0])
-    else :
-        return None
-    return item
-
+#    if item and len(item)>1:
+#        item = int(item[0])+int(item[1])
+#    elif item:
+#        item = int(item[0])
+#    else :
+#        return None
+#    return item
+    o = " ".join(item)
+    return o
 http_proxy  = "http://10.3.100.207:8080"
 https_proxy = "https://10.3.100.207:8080"
 ftp_proxy   = "ftp://10.3.100.207:8080"
@@ -30,6 +31,7 @@ def web_scrapping(url,final):
     data = map(str,data)
     extract = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
     #extract = map(output_converter,final)
+    final = [i+j for i,j in extract]
     final.append(extract)
 
 class mythread(threading.Thread):
@@ -54,6 +56,7 @@ for i in xrange(len(links)):
     finally:
         thread_list.append(t)
 print final
+print len(final)
 #temp=[]
 #for item in final:
 #    temp.append(" ".join(item))
