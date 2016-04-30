@@ -1,16 +1,6 @@
 import requests,re,csv,threading
 from bs4 import BeautifulSoup
 
-def output_converter(item):
-#    if item and len(item)>1:
-#        item = int(item[0])+int(item[1])
-#    elif item:
-#        item = int(item[0])
-#    else :
-#        return None
-#    return item
-    o = " ".join(item)
-    return o
 http_proxy  = "http://10.3.100.207:8080"
 https_proxy = "https://10.3.100.207:8080"
 ftp_proxy   = "ftp://10.3.100.207:8080"
@@ -23,16 +13,16 @@ def dict_information_access():
         return links
 
 def web_scrapping(url,final):
-    global proxyDict
-    r = requests.get(url,proxies = proxyDict)
-    html = r.content
-    soup = BeautifulSoup(html,'lxml')
-    data = soup.findAll('div',{"class":"price"})
-    data = map(str,data)
-    extract = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
-    #extract = map(output_converter,final)
-    temp = [i+j for i,j in extract]
-    final.append(temp)
+        global proxyDict
+        r = requests.get(url,proxies = proxyDict)
+        html = r.content
+        soup = BeautifulSoup(html,'lxml')
+        data = soup.findAll('div',{"class":"price"})
+        data = data + soup.findAll('span',{"class":"price"})
+        data = map(str,data)
+        extract = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
+        temp = [i+j for i,j in extract]
+        final.append(temp)
 
 class mythread(threading.Thread):
     def __init__(self,threadid,url,final):
@@ -56,9 +46,10 @@ for i in xrange(len(links)):
     finally:
         thread_list.append(t)
 temp=[]
+for t in thread_list:
+    t.join()
 for item in final:
     temp.append(" ".join(item))
 z = "\n".join(temp)
-
 with open('data.txt','w') as f:
     f.write(z)
