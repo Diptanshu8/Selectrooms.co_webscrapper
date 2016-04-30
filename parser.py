@@ -31,8 +31,8 @@ def web_scrapping(url,final):
     data = map(str,data)
     extract = re.findall('\xa0([0-9]*),([0-9]*)'," ".join(data))
     #extract = map(output_converter,final)
-    final = [i+j for i,j in extract]
-    final.append(extract)
+    temp = [i+j for i,j in extract]
+    final.append(temp)
 
 class mythread(threading.Thread):
     def __init__(self,threadid,url,final):
@@ -55,11 +55,10 @@ for i in xrange(len(links)):
         break
     finally:
         thread_list.append(t)
-print final
-print len(final)
-#temp=[]
-#for item in final:
-#    temp.append(" ".join(item))
-#z = "\n".join(final)
-#with open('data.txt','w') as f:
-#    f.write(z)
+temp=[]
+for item in final:
+    temp.append(" ".join(item))
+z = "\n".join(temp)
+
+with open('data.txt','w') as f:
+    f.write(z)
