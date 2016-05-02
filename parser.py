@@ -31,7 +31,7 @@ j=0
 final=[]
 thread_list=[]
 links = dict_information_access()
-while j < 12:
+while j < 13:
     for i in xrange(200):
         t = mythread(i,links[i],final)
         t.start()
