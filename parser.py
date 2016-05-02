@@ -1,11 +1,6 @@
 import requests,re,csv,threading
 from bs4 import BeautifulSoup
 
-http_proxy  = "http://10.3.100.207:8080"
-https_proxy = "https://10.3.100.207:8080"
-ftp_proxy   = "ftp://10.3.100.207:8080"
-proxyDict = { "http"  : http_proxy, "https" : https_proxy,"ftp"   : ftp_proxy}
-
 def dict_information_access():
     with open('TripAdvisorValidURLs.csv','r') as f:
         reader = csv.reader(f)
@@ -13,10 +8,9 @@ def dict_information_access():
         return links
 
 def web_scrapping(url,final):
-        global proxyDict
-        r = requests.get(url,proxies = proxyDict)
+        r = requests.get(url)
         html = r.content
-        soup = BeautifulSoup(html,'lxml')
+        soup = BeautifulSoup(html)
         data = soup.findAll('div',{"class":"price"})
         data = data + soup.findAll('span',{"class":"price"})
         data = map(str,data)
@@ -33,21 +27,21 @@ class mythread(threading.Thread):
     def run(self):
         print "Starting thread "+ str(self.threadid)
         web_scrapping(self.url,self.final)
-
+j=0
 final=[]
 thread_list=[]
 links = dict_information_access()
-for i in xrange(len(links)):
-    t = mythread(i,links[i],final)
-    try:
+while j < 12:
+    for i in xrange(200):
+        t = mythread(i,links[i],final)
         t.start()
-    except:
-        break
-    finally:
         thread_list.append(t)
+    j=j+1
+    links = links[j+1:]
+    for t in thread_list:
+        t.join()
+    thread_list=[]
 temp=[]
-for t in thread_list:
-    t.join()
 for item in final:
     temp.append(" ".join(item))
 z = "\n".join(temp)
